@@ -14,17 +14,6 @@
       { x: 5, y: 3 },
     ],
   });
-  const INITIAL_PROGRAM = [
-    "move()",
-    "move()",
-    "move()",
-    "turnLeft()",
-    "move()",
-    "move()",
-    "move()",
-    "turnRight()",
-    "move()",
-  ].join("\n");
   const engine = window.CodemasterEngine;
   const editor = document.querySelector("#program");
   const board = document.querySelector("#game-board");
@@ -33,6 +22,9 @@
   const runButton = document.querySelector("#run-button");
   const resetButton = document.querySelector("#reset-button");
   const lineNumbers = document.querySelector("#line-numbers");
+  const progress = document.querySelector("#run-progress");
+  const hintsButton = document.querySelector("#hints-button");
+  const hintPopover = document.querySelector("#hint-popover");
   let initialState = engine.createGame(LEVEL);
   let timer = null;
   let currentRun = 0;
@@ -117,6 +109,7 @@
     }
 
     initialState = engine.step(initialState, commands[index]);
+    progress.style.width = `${((index + 1) / commands.length) * 100}%`;
     render(initialState);
     if (initialState.status !== "running") {
       stopRun();
@@ -133,6 +126,7 @@
     currentRun += 1;
     const runId = currentRun;
     initialState = engine.createGame(LEVEL);
+    progress.style.width = "0%";
     render(initialState);
     try {
       const commands = engine.parseProgram(editor.value);
@@ -153,12 +147,43 @@
     stopRun();
     currentRun += 1;
     initialState = engine.createGame(LEVEL);
+    progress.style.width = "0%";
     render(initialState);
-    setStatus("Add one more move to reach the beacon.");
+    setStatus("Write a program to guide your hero to the beacon.");
+  }
+
+  function practiceStep(direction) {
+    stopRun();
+    currentRun += 1;
+    if (initialState.status !== "running") initialState = engine.createGame(LEVEL);
+    const directions = ["north", "east", "south", "west"];
+    const target = directions.indexOf(direction);
+    const current = directions.indexOf(initialState.hero.facing);
+    const rightTurns = (target - current + 4) % 4;
+    const turnDirection = rightTurns <= 2 ? "right" : "left";
+    const turnCount = rightTurns <= 2 ? rightTurns : 4 - rightTurns;
+    for (let turn = 0; turn < turnCount; turn += 1) {
+      initialState = engine.step(initialState, { type: "turn", direction: turnDirection });
+    }
+    initialState = engine.step(initialState, { type: "move" });
+    render(initialState);
+    if (initialState.status !== "running") {
+      showOutcome(initialState);
+    } else {
+      setStatus(`Practice move: ${direction}. Now try writing that move as code.`);
+    }
   }
 
   runButton.addEventListener("click", runProgram);
   resetButton.addEventListener("click", resetGame);
+  hintsButton.addEventListener("click", () => {
+    const expanded = hintsButton.getAttribute("aria-expanded") === "true";
+    hintsButton.setAttribute("aria-expanded", String(!expanded));
+    hintPopover.hidden = expanded;
+  });
+  document.querySelectorAll("[data-step]").forEach((button) => {
+    button.addEventListener("click", () => practiceStep(button.dataset.step));
+  });
   editor.addEventListener("input", updateLineNumbers);
   editor.addEventListener("scroll", () => { lineNumbers.scrollTop = editor.scrollTop; });
   editor.addEventListener("keydown", (event) => {
@@ -186,7 +211,7 @@
     });
   });
 
-  editor.value = INITIAL_PROGRAM;
   updateLineNumbers();
+  setStatus("Write a program to guide your hero to the beacon.");
   render(initialState);
 })();

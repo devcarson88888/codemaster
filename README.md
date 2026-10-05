@@ -13,11 +13,11 @@ server. For example:
 python -m http.server 8000
 ```
 
-Then visit <http://localhost:8000>. Edit the program and click **Run program**
-(or press Ctrl/Command+Enter). The hero follows one instruction at a time. Use
-**Reset** to restart the level.
-
-The starter program is one move short of the beacon. Available commands are:
+Then visit <http://localhost:8000>. Write commands in the editor and click the
+play button below the game world (or press Ctrl/Command+Enter). The hero
+follows one instruction at a time. Use the arrow pad to practice movement
+directly, **Reset** to restart the level, and **Hints** if you get stuck.
+Available commands are:
 
 ```js
 move()
