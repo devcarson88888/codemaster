@@ -1,23 +1,16 @@
 # Codemaster
 
-Codemaster is a small browser-based coding game. There is no install step,
-desktop client, backend, or framework: it is a static web app built with HTML,
-CSS, and JavaScript.
+Codemaster is a browser-based coding game hosted with GitHub Pages. There is no
+install step, desktop client, backend, or framework.
 
 ## Play
 
-Open `index.html` in a browser or serve the repository with any static web
-server. For example:
+Open **[Codemaster](https://devcarson88888.github.io/codemaster/)** and write
+commands in the editor. Click the play button (or press Ctrl/Command+Enter) to
+run your program. Use the arrow pad to practice movement, **Reset** to restart
+the level, and **Hints** if you get stuck.
 
-```console
-python -m http.server 8000
-```
-
-Then visit <http://localhost:8000>. Write commands in the editor and click the
-play button below the game world (or press Ctrl/Command+Enter). The hero
-follows one instruction at a time. Use the arrow pad to practice movement
-directly, **Reset** to restart the level, and **Hints** if you get stuck.
-Available commands are:
+Available commands:
 
 ```js
 move()
@@ -32,5 +25,11 @@ first win or collision, and reports `running`, `won`, or `failed`.
 
 ## Tests
 
-Open `tests/engine-tests.html` in a browser to run the engine's dependency-free
-test suite.
+Run the dependency-free browser tests at
+[`/tests/engine-tests.html`](https://devcarson88888.github.io/codemaster/tests/engine-tests.html).
+
+## Deployment
+
+GitHub Actions publishes the static site to GitHub Pages on every push to
+`main`. The deployment workflow copies the site files and browser tests into
+the Pages artifact; no local web server or build step is required.
